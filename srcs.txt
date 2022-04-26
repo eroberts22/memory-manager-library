@@ -2,9 +2,9 @@ ifdef include a file
     https://stackoverflow.com/questions/12314508/conditional-include-in-c
 overload new & delete operator
     https://www.geeksforgeeks.org/overloading-new-delete-operator-c/
-macro 
+replace new with macro 
     https://stackoverflow.com/questions/619467/macro-to-replace-c-operator-new
-error
+error bad_alloc
     http://www.cplusplus.com/reference/new/bad_alloc/
 atexit
     https://en.cppreference.com/w/cpp/utility/program/atexit
