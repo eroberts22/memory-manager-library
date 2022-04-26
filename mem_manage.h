@@ -25,10 +25,6 @@ class MemoryManager {
 
     std::map<void*, Entry> entriesInMemory;
 
-    // create list of memory blocks?
-    // malloc pushes a ptr to a memory location
-
-
     // allocating memory
     void * m_malloc(size_t size, const char* filename, int line) {
 
@@ -56,7 +52,7 @@ class MemoryManager {
     void removeEntry(void * p) {
         // check if entry exists by address
         // delete if exists
-        // if does not exist throw error
+        // if entry does not exist throw error
         if(entriesInMemory.find(p) != entriesInMemory.end()) {
             entriesInMemory.erase(p);
             std::cout << " address: " << p << std::endl;
@@ -64,9 +60,9 @@ class MemoryManager {
         } else {
             std::cerr << " error: cannot deallocate, entry does not exist\n";
         }
-        
     }
 
+    // print any entries currently in the map
     void printEntries() {
         for (std::pair<void*,Entry>e: entriesInMemory) {
             std::cout << "(" << e.second.filename << ":" << e.second.line << ") address: " << e.first << "\n";
@@ -74,6 +70,7 @@ class MemoryManager {
         std::cout << std::endl;
     }
 
+    // return true if there are no entries in memory
     bool empty() {
         return entriesInMemory.empty();
     }
@@ -84,6 +81,8 @@ static MemoryManager m;
 ////////////////////////
 // Operator Overloads //
 ////////////////////////
+
+// overload new operator
 void * operator new (size_t size, const char* filename, int line) {
     void * p;
     try {
@@ -94,6 +93,7 @@ void * operator new (size_t size, const char* filename, int line) {
     return p;
 }
 
+// overload new [] operator
 void * operator new [] (size_t size, const char* filename, int line) {
     void * p;
     try {
@@ -104,29 +104,39 @@ void * operator new [] (size_t size, const char* filename, int line) {
     return p;
 }
 
+// overload delete operator
 void operator delete (void * p, size_t size) noexcept {
     m.m_free(p);
 }
 
+// overload delete [] operator
 void operator delete [](void * p, size_t size) noexcept{
     m.m_free(p);
 }
 
-// output file and line name for deallocate
+
+void access(int A) {
+    std::cout << "work\n";
+}
+
+// used to output file and line name for deallocate
 void mdelete(const char* filename, int line) {
     std::cout << "Deallocating (" << filename << ":" << line << ")";
     return;
 }
 
+// when program exits: check for memory leak
+// by checking for any allocated memory that was not deallocated
 void atexit_check() {
+    // if map of entries is not empty, something was not deallocated properly
     if(!m.empty()) {
         std::cout << "error: memory leak(s) detected:" << std::endl;
-        m.printEntries();
+        m.printEntries(); // print entries that remain in map
     }
-
 }
 
 const int mem_leak_check = std::atexit(atexit_check);
 
 #define new new(__FILE__,__LINE__)
 #define delete mdelete(__FILE__,__LINE__), delete
+

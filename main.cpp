@@ -8,11 +8,10 @@
 #include "mem_manage.h"
 #endif 
 
-
 void buffer_overrun() {
     int *p = new int[10];
-    //p[-1] = 10;
-    //p[10] = 10;
+    p[-1] = 10;
+    p[10] = 10;
     delete p;
 }
 
@@ -28,7 +27,7 @@ void invalid_delete_1() {
 void invalid_delete_2() {
     int *p = new int;
     delete p;
-    delete p; // invalid
+    delete p;
 }
 
 void valid() {
@@ -40,8 +39,9 @@ void valid() {
 
 int main() {
 
-    std::cout << "\nBUFFER OVERFLOW\n-------------------------------------------------------------\n";
-    buffer_overrun();
+    //std::cout << "\nBUFFER OVERFLOW\n-------------------------------------------------------------\n";
+   // buffer_overrun();
+    
     std::cout << "\nMEMORY LEAK\n-------------------------------------------------------------\n";
     memory_leak();
     std::cout << "\nINVALID DELETE 1\n-------------------------------------------------------------\n";
